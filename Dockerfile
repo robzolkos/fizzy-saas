@@ -25,7 +25,6 @@ RUN apt-get update -qq && \
 # Install application gems
 COPY Gemfile Gemfile.lock Gemfile.saas Gemfile.saas.lock .ruby-version ./
 COPY lib/fizzy.rb ./lib/fizzy.rb
-COPY gems ./gems/
 RUN --mount=type=secret,id=GITHUB_TOKEN --mount=type=cache,id=fizzy-permabundle-${RUBY_VERSION},sharing=locked,target=/permabundle \
     gem install bundler && \
     BUNDLE_PATH=/permabundle BUNDLE_GITHUB__COM="$(cat /run/secrets/GITHUB_TOKEN):x-oauth-basic" bundle install && \
