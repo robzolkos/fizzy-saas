@@ -17,6 +17,13 @@ module Fizzy
         app.config.middleware.insert_after(ActiveRecord::Middleware::DatabaseSelector, TransactionPinning::Middleware)
       end
 
+      # Load test mocks automatically in test environment
+      initializer "fizzy_saas.test_mocks", after: :load_config_initializers do
+        if Rails.env.test?
+          require "fizzy/saas/testing"
+        end
+      end
+
       config.to_prepare do
         Queenbee::Subscription.short_names = Subscription::SHORT_NAMES
         Queenbee::ApiToken.token = Rails.application.credentials.dig(:queenbee_api_token)
