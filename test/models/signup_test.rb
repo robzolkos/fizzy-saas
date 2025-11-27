@@ -9,15 +9,20 @@ class Fizzy::Saas::SignupTest < ActiveSupport::TestCase
     Account.any_instance.expects(:setup_customer_template).once
 
     Current.without_account do
-      signup = Signup.new(
-        full_name: "Kevin",
-        identity: identities(:kevin)
-      )
+      assert_changes -> { Account.count }, +1 do
+        sequence_value_before = Account::ExternalIdSequence.value
 
-      assert signup.complete
+        signup = Signup.new(
+          full_name: "Kevin",
+          identity: identities(:kevin)
+        )
 
-      assert signup.account
-      assert_equal 123456, signup.account.external_account_id
+        assert signup.complete
+
+        assert signup.account
+        assert_equal 123456, signup.account.external_account_id
+        assert_equal sequence_value_before, Account::ExternalIdSequence.value
+      end
     end
   end
 
