@@ -20,11 +20,11 @@ ssh:
 env:
   clear:
     RAILS_ENV: beta
-    MYSQL_DATABASE_HOST: fizzy-beta-mysql-primary
-    MYSQL_DATABASE_REPLICA_HOST: fizzy-beta-mysql-replica
-    MYSQL_SOLID_CABLE_HOST: fizzy-beta-mysql-primary
-    MYSQL_SOLID_QUEUE_HOST: fizzy-beta-mysql-primary
-    MYSQL_SOLID_CACHE_HOST: fizzy-beta-mysql-primary
+    MYSQL_DATABASE_HOST: fizzy-mysql-primary
+    MYSQL_DATABASE_REPLICA_HOST: fizzy-mysql-replica
+    MYSQL_SOLID_CABLE_HOST: fizzy-mysql-primary
+    MYSQL_SOLID_QUEUE_HOST: fizzy-mysql-primary
+    MYSQL_SOLID_CACHE_HOST: fizzy-beta-solidcache-db-101
   secret:
     - RAILS_MASTER_KEY
     - MYSQL_ALTER_PASSWORD
@@ -46,6 +46,10 @@ accessories:
   load-balancer:
     image: basecamp/kamal-proxy:lb
     host: fizzy-beta-lb-01.sc-chi-int.37signals.com
+    labels:
+      otel_role: load-balancer
+      otel_service: fizzy-load-balancer
+      otel_scrape_enabled: true
     options:
       publish:
         - 80:80
